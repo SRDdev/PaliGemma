@@ -28,14 +28,14 @@ import torch
 import numpy as np
 from torch import nn
 from PIL import Image
-from utils import process_images, add_image_tokens_to_prompt
+from .utils import process_images, add_image_tokens_to_prompt
 from torch.nn import functional as f
 from typing import Optional,List,Dict,Tuple
-from vision_encoder import VisionConfigs, VisionModel
-from text_encoder import KVCache, TextConfig, GemmaForCausalLM
+from .vision_encoder import VisionConfigs, VisionModel
+from .text_encoder import KVCache, TextConfig, GemmaForCausalLM
 from transformers import AutoTokenizer
 import json
-from glob import glob
+import glob
 import os
 from safetensors import safe_open
 

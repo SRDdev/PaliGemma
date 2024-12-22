@@ -5,7 +5,7 @@ import torch
 from torch import nn
 from torch.nn import functional as f
 from typing import Optional,List,Dict,Tuple
-from vision_encoder import VisionConfigs, VisionModel
+from .vision_encoder import VisionConfigs, VisionModel
 
 class KVCache():
     """

@@ -7,12 +7,11 @@ import torch
 from PIL import Image
 from torchvision import transforms
 from transformers import AutoTokenizer
-from glob import glob
+import glob
 from safetensors import safe_open
 import os
 import json
 from typing import Tuple
-from multimodal import PaliGemmaForConditionalGeneration, MultiModalConfig
 from typing import Dict, List, Optional, Union, Tuple, Iterable
 import numpy as np
 from PIL import Image
