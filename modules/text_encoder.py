@@ -203,7 +203,7 @@ class TextMLP(nn.Module):
     3. The MLP also uses the RMSNorm layer to normalize the output tensor.
     """
     def __init__(self,config):
-        super()().__init__()
+        super().__init__()
         self.config = config
         self.hidden_size = config.hidden_size
         self.intermediate_size = config.intermediate_size
@@ -369,7 +369,7 @@ class GemmaModel(nn.Module):
         self.vocab_size = config.vocab_size                                                         # Get the vocabulary size
 
         self.embed_tokens = nn.Embedding(config.vocab_size, config.hidden_size, self.padding_idx)   # Initialize the embedding layer
-        self.layers = nn.Modulelist(
+        self.layers = nn.ModuleList(
             [TextDecoderLayer(config,layer_idx) for layer_idx in range(config.num_hidden_layers)]
         )                                                                                           # Initialize the `n` decoder layers.
         self.norm = RMSNorm(config.hidden_size, config.rms_norm_eps)                                # Initialize the RMSNorm layer
@@ -412,7 +412,7 @@ class GemmaForCausalLM(nn.Module):
         # Note : What is LM head ?
         # The lm_head is a linear layer that takes the last hidden states from GemmaModel and projects them into vocabulary logits for language modeling.
         # Essentially, it maps the hidden representations to a distribution over the full vocabulary, enabling next-token prediction and related tasks.
-        self.lm_head = nn.Linear(config.hidden_size, config.vicab_size, bias=False)
+        self.lm_head = nn.Linear(config.hidden_size, config.vocab_size, bias=False)
 
     def get_input_embedding(self):
         """

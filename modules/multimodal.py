@@ -42,6 +42,7 @@ from safetensors import safe_open
 IMAGENET_STANDARD_MEAN = [0.5, 0.5, 0.5]
 IMAGENET_STANDARD_STD = [0.5, 0.5, 0.5]
 
+
 #-------------------------------------------------- MultiModal Config --------------------------------------------------#
 class MultiModalConfig(nn.Module):
     """
@@ -77,7 +78,6 @@ class MultiModalConfig(nn.Module):
         self.vocab_size = self.text_config.vocab_size
         self.text_config.num_image_tokens = (self.vision_config.image_size // self.vision_config.patch_size) ** 2
         self.vision_config.projection_dim = self.projection_dim
-
 #-------------------------------------------------- MultiModal Projector --------------------------------------------------#
 class PaliGemmaMultiModalProjector(nn.Module):
     """
@@ -85,11 +85,10 @@ class PaliGemmaMultiModalProjector(nn.Module):
     """
     def __init__(self, config:MultiModalConfig):
         super().__init__()
-        self.Linear = nn.Linear(self.vision_config.hidden_size, self.vision_config.projection_dim, bias=False)
+        self.Linear = nn.Linear(config.vision_config.hidden_size, config.vision_config.projection_dim, bias=False)
 
     def forward(self, image_features):
         return self.Linear(image_features)
-
 #-------------------------------------------------- MultiModal PreProcessor --------------------------------------------------#
 class PaliGemmaProcessor(nn.Module):
     """
