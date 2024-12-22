@@ -15,3 +15,13 @@ image_size: 224
 image_dir: "data/train"
 output_image: "vision_output.png"
 
+# PaliGemma
+PaliGemma:
+  model_path: "models/paligemma-3b-pt-224"
+  prompt: "Describe the given image in detail"
+  image_path: "data/train/image1.png"
+  max_tokens_to_generate: 100
+  temp: 0.8
+  top_p: 0.9
+  do_sample: "False"
+  only_cpu: "False"
