@@ -28,11 +28,16 @@ import torch
 import numpy as np
 from torch import nn
 from PIL import Image
-from utils import process_images, add_image_tokens_to_prompt
+from .utils import process_images, add_image_tokens_to_prompt
 from torch.nn import functional as f
 from typing import Optional,List,Dict,Tuple
-from vision_encoder import VisionConfigs, VisionModel
-from text_encoder import KVCache, TextConfig, GemmaForCausalLM
+from .vision_encoder import VisionConfigs, VisionModel
+from .text_encoder import KVCache, TextConfig, GemmaForCausalLM
+from transformers import AutoTokenizer
+import json
+import glob
+import os
+from safetensors import safe_open
 
 IMAGENET_STANDARD_MEAN = [0.5, 0.5, 0.5]
 IMAGENET_STANDARD_STD = [0.5, 0.5, 0.5]
@@ -253,3 +258,37 @@ class PaliGemmaForConditionalGeneration(nn.Module):
 
         return outputs
 
+#-------------------------------------------------- MultiModal Model --------------------------------------------------#
+def load_hf_model(model_path: str, device: str) -> Tuple[PaliGemmaForConditionalGeneration, AutoTokenizer]:
+    """
+    Loads the Huggingface model weights into the architecture for PaliGemma.
+    """
+    # Load the tokenizer
+    tokenizer = AutoTokenizer.from_pretrained(model_path, padding_side="right")
+    assert tokenizer.padding_side == "right"
+
+    # Find all the *.safetensors files
+    safetensors_files = glob.glob(os.path.join(model_path, "*.safetensors"))
+
+    # ... and load them one by one in the tensors dictionary
+    tensors = {}
+    for safetensors_file in safetensors_files:
+        with safe_open(safetensors_file, framework="pt", device="cpu") as f:
+            for key in f.keys():
+                tensors[key] = f.get_tensor(key)
+
+    # Load the model's config
+    with open(os.path.join(model_path, "config.json"), "r") as f:
+        model_config_file = json.load(f)
+        config = MultiModalConfig(**model_config_file)
+
+    # Create the model using the configuration
+    model = PaliGemmaForConditionalGeneration(config).to(device)
+
+    # Load the state dict of the model
+    model.load_state_dict(tensors, strict=False)
+
+    # Tie weights
+    model.tie_weights()
+
+    return (model, tokenizer)

@@ -6,8 +6,8 @@ import fire
 
 from modules.multimodal import PaliGemmaForConditionalGeneration, PaliGemmaProcessor
 from modules.text_encoder import KVCache
-from modules.utils import load_hf_model
-
+from modules.multimodal import load_hf_model
+from modules.utils import load_config
 class PaliGemmaInference:
     """
     Class for Inferencing PaliGemma
@@ -109,4 +109,14 @@ def main(model_path: str,prompt: str,image_file_path: str,max_tokens_to_generate
 
 #--------------------------------------------------------------------#
 if __name__ == "__main__":
-    fire.Fire(main)
+    config = load_config()['PaliGemma']
+    model_path = config['model_path']
+    prompt = config['prompt']
+    image_file_path = config['image_path']
+    max_tokens_to_generate = config['max_tokens_to_generate']
+    temp = config['temp']
+    top_p = config['top_p']
+    do_sample = config['do_sample']
+    only_cpu = config['only_cpu']
+    main(model_path,prompt,image_file_path,max_tokens_to_generate,temp,top_p,do_sample,only_cpu)
+    
