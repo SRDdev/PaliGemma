@@ -6,7 +6,7 @@ import fire
 
 from modules.multimodal import PaliGemmaForConditionalGeneration, PaliGemmaProcessor
 from modules.text_encoder import KVCache
-from modules.utils import load_hf_model
+from modules.multimodal import load_hf_model
 
 class PaliGemmaInference:
     """
